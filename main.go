@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strconv"
 
 	"gorm.io/gorm"
 
@@ -20,36 +21,44 @@ type User struct {
 	Fullname       string	`json:"fullname"`
 	Username       string	`json:"username"`
 	Email          string	`json:"email"`
+	DeletedAt      gorm.DeletedAt `gorm: "Soft_delete: true"`
+}
+
+func (User) SoftDelete() bool {
+	return false
 }
 
 type UserServer struct {
 	DB *gorm.DB
 }
-
-
 func (s *UserServer) Update(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
-	id := req.GetId()
-	diamonds_totals := req.GetDiamondsTotals()
-	fullname := req.GetFullname()
-	username := req.GetUsername()
-	email := req.GetEmail()
+    id := req.GetId()
 
-	user := User{
-		Model: gorm.Model{
-			ID: uint(id),
-		},
-		Diamonds_totals: diamonds_totals,
-		Fullname:       fullname,
-		Username:       username,
-		Email:          email,
-	}
+    var user User
+    res := s.DB.First(&user, id)
+    if res.Error != nil {
+        return &pb.UpdateUserResponse{Success: false}, res.Error
+    }
 
-	res := s.DB.Save(&user)
-	if res.Error != nil {
-		return &pb.UpdateUserResponse{Success: false}, res.Error
-	}
+    if req.DiamondsTotals != 0 {
+        user.Diamonds_totals = strconv.FormatInt(req.GetDiamondsTotals(), 10)
+    }
+    if req.Fullname != "" {
+        user.Fullname = req.GetFullname()
+    }
+    if req.Username != "" {
+        user.Username = req.GetUsername()
+    }
+    if req.Email != "" {
+        user.Email = req.GetEmail()
+    }
 
-	return &pb.UpdateUserResponse{Success: true}, nil
+    res = s.DB.Save(&user)
+    if res.Error != nil {
+        return &pb.UpdateUserResponse{Success: false}, res.Error
+    }
+
+    return &pb.UpdateUserResponse{Success: true}, nil
 }
 
 func main() {

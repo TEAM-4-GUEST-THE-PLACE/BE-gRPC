@@ -12,7 +12,7 @@ import (
   }
   
   func DatabaseConnection() {
-	dsn := "host=roundhouse.proxy.rlwy.net port=32190 user=postgres dbname=railway password=kqaUZaPvstRpAiHSUDeBbVxVPtkgpEhv sslmode=disable"
+	dsn := "host=postgresql-167179-0.cloudclusters.net port=19727 user=admin dbname=be-GTP password=admin123 sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 	  panic("failed to connect database")

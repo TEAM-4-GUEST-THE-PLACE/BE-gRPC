@@ -3,7 +3,7 @@ option go_package="/golang_protobuff_users";
 
 message UpdateUserRequest {
     int64 id = 1;
-    string diamonds_totals = 2;
+    int64 diamonds_totals = 2;
     string fullname = 3;
     string username = 4;
     string email = 5;
