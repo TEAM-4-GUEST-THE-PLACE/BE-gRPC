@@ -26,7 +26,6 @@ type UserServer struct {
 	DB *gorm.DB
 }
 
-// Update implements golang_protobuff_users.UsersServiceServer.
 
 func (s *UserServer) Update(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
 	id := req.GetId()
