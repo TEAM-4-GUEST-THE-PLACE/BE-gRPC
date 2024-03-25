@@ -1,0 +1,19 @@
+syntax = "proto3";
+option go_package="/golang_protobuff_users";
+
+message UpdateUserRequest {
+    int64 id = 1;
+    string diamonds_totals = 2;
+    string fullname = 3;
+    string username = 4;
+    string email = 5;
+  }
+  
+  message UpdateUserResponse {
+    bool success = 1;
+    string message = 2;
+  }
+
+service UsersService {
+    rpc Update(UpdateUserRequest) returns (UpdateUserResponse);
+}
